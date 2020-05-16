@@ -1,0 +1,19 @@
+server:
+  port: 8000
+
+spring:
+  liquibase:
+    change-log: classpath:changelog/master.xml
+
+
+management:
+  server:
+    port: 8081
+  endpoints:
+    web:
+      base-path: /
+      path-mapping:
+        prometheus: metrics
+      exposure:
+        include: health,info,prometheus
+

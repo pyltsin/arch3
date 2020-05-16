@@ -1,0 +1,29 @@
+POST http://192.168.99.100/user
+Content-Type: application/json
+Cookie: JSESSIONID=0FAFB365AFF1C990BC3F9172CD37E402
+Host: arch.homework
+
+{
+  "firstName": "firstName",
+  "secondName": "secondName",
+  "login": "test5"
+}
+
+###
+PUT http://192.168.99.100/user
+Content-Type: application/json
+Cookie: JSESSIONID=0FAFB365AFF1C990BC3F9172CD37E402
+Host: arch.homework
+
+{
+  "firstName": "firstName4",
+  "secondName": "secondName4",
+  "login": "test5",
+  "id": "547e0b29-3c7e-4087-a398-e6d5c5b1c443"
+}
+
+###
+GET http://192.168.99.100/user/test5
+Content-Type: application/json
+Cookie: JSESSIONID=0FAFB365AFF1C990BC3F9172CD37E402
+Host: arch.homework

@@ -1,0 +1,23 @@
+replicaCount: 1
+
+image:
+  repository: pyltsin/myapp:1.0
+
+service:
+  type: NodePort
+  port: 8000
+
+postgresql:
+  enabled: true
+  postgresqlUsername: myuser
+  postgresqlPassword: passwd
+  postgresqlDatabase: myapp
+  service:
+    port: "5432"
+
+
+ingress:
+  enabled: false
+  hosts:
+    - host: hello.world
+      paths: ["/app"]

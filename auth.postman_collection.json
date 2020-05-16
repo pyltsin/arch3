@@ -1,0 +1,395 @@
+{
+	"info": {
+		"_postman_id": "187aa39c-182e-44c6-8c14-0b20d54223d7",
+		"name": "nginx forward auth",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "регистрация",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1c49ba28-0f35-4355-8f7e-30fbca03ec71",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "8681b670-f29d-4329-8a25-92460041df4b",
+						"exec": [
+							"pm.collectionVariables.set(\"password\", pm.variables.replaceIn('{{$randomPassword}}'))",
+							"pm.collectionVariables.set(\"login\", pm.variables.replaceIn('{{$randomUserName}}'))",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"login\": \"{{login}}\", \n\t\"password\": \"{{password}}\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/register",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "логин",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "504f1ce3-2541-4c98-9e95-ba126314869d",
+						"exec": [
+							"pm.environment.set('my_cookie', pm.cookies.get('JSESSIONID'))"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"login\": \"{{login}}\", \"password\": \"{{password}}\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/login2",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"login2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "создать пользователя",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c7163ed8-8db6-4362-84a7-90280081ceb3",
+						"exec": [
+							"var responseJSON = JSON.parse(responseBody)",
+							"pm.collectionVariables.set(\"id\", responseJSON[\"id\"])",
+							"",
+							"pm.test(\"test firstName\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.firstName).eql(pm.collectionVariables.get(\"firstName\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "6a10d76e-77e8-4ad4-a367-2f97f62d2076",
+						"exec": [
+							"pm.collectionVariables.set(\"firstName\", pm.variables.replaceIn('{{$randomUserName}}'))",
+							"pm.collectionVariables.set(\"secondName\", pm.variables.replaceIn('{{$randomUserName}}'))"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "JSESSIONID={{my_cookie}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"firstName\": \"{{firstName}}\",\n\t\"login\": \"{{login}}\",\n\t  \"secondName\": \"{{secondName}}\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/user",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "обновить данные о пользователе",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ec567867-f13c-44e1-b7ad-8c3615169bc5",
+						"exec": [
+							"pm.collectionVariables.set(\"firstName\", pm.variables.replaceIn('{{$randomUserName}}'))",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "0fbe7870-afe2-4321-b4bb-7aac40243e33",
+						"exec": [
+							"pm.test(\"test firstName\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.firstName).to.eql(pm.collectionVariables.get(\"firstName\"))",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "JSESSIONID={{my_cookie}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"firstName\": \"{{firstName}}\",\n\t\"login\": \"{{login}}\",\n\t  \"secondName\": \"{{secondName}}\",\n\t  \"id\": \"{{id}}\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/user",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "получить данные",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "68e028d2-e5d1-437d-87f9-bd82e6a78501",
+						"exec": [
+							"pm.test(\"test firstName\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.firstName).eql(pm.collectionVariables.get(\"firstName\"))",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "JSESSIONID={{my_cookie}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/user/{{login}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						"{{login}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "получить данные чужого пользователя",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "a9982504-a112-4b14-b21c-0568efa85925",
+						"exec": [
+							"pm.test(\"test not allowed\", function () {",
+							"    pm.response === undefined",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "JSESSIONID={{my_cookie}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/user/test1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						"test1"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "3ccff081-7029-4259-b528-0e32275bbe01",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "d8733d67-860f-4d2f-a915-b8eb9bc1b415",
+				"type": "text/javascript",
+				"exec": [
+					"tests[\"[INFO] Request: \" + (('data' in request) ? request['data'] : '') ] = true;",
+					"tests[\"[INFO] Response: \" + responseBody] = true;"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "cda252ff-0605-468f-9ca2-eb3bd6e42970",
+			"key": "IDtoken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "c8227998-0e76-49ab-bee7-31585ab3a527",
+			"key": "password",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "3ea77189-9ce0-4334-8cfc-58b8dcdec687",
+			"key": "email",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "fc8c69ec-7974-4e33-9bfb-16c48761d10e",
+			"key": "login",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "ab720ff6-a5e2-437c-88ad-dc4d8e1d6235",
+			"key": "firstName",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "cf38c7a6-17ba-4c5d-b7f7-d136b022086a",
+			"key": "lastName",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "faddc343-29d9-46ba-b1ec-437f5168dc9d",
+			"key": "baseUrl",
+			"value": "http://arch.homework",
+			"type": "string"
+		},
+		{
+			"id": "872da1e9-58bc-4d9b-837c-49cd87bf1ef3",
+			"key": "secondName",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "31c4db69-7b27-44e7-a5d3-1ce374d6ab2f",
+			"key": "id",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}

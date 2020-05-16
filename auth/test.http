@@ -1,0 +1,26 @@
+###
+POST  http://192.168.99.100/register
+Content-Type: application/json
+Host: arch.homework
+
+{"login": "test5",
+ "password": "password5"
+ }
+
+###
+POST  http://192.168.99.100/login2
+Content-Type: application/json
+Host: arch.homework
+
+{"login": "test5",
+ "password": "password5"
+ }
+
+
+###
+GET http://192.168.99.100/auth
+Content-Type: application/json
+Host: arch.homework
+Cookie: JSESSIONID=0FAFB365AFF1C990BC3F9172CD37E402
+
+
